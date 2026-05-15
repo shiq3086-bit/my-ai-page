@@ -34,7 +34,7 @@
 
             try {
                 // 【注意】请务必把下面引号里的网址，换成你从 Cloudflare 拿到的 .workers.dev 网址
-                const response = await fetch('这里填入你的Worker网址', {
+                const response = await fetch('https://plain-haze-a297.shiq3086.workers.dev', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ question: question })
