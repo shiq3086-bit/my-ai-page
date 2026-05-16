@@ -1,4 +1,4 @@
-、<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN" class="dark">
 <head>
     <meta charset="UTF-8">
@@ -32,6 +32,7 @@
             display: flex;
             height: 100vh;
             overflow: hidden;
+            position: relative;
         }
 
         /* 1. 左侧苹果极简导航栏 */
@@ -43,6 +44,7 @@
             flex-direction: column;
             padding: 32px 24px;
             justify-content: space-between;
+            flex-shrink: 0;
         }
 
         .brand {
@@ -57,7 +59,6 @@
 
         .brand i {
             color: var(--primary);
-            animation: pulse 2s infinite;
         }
 
         .menu-list {
@@ -88,7 +89,7 @@
             border: 1px solid var(--border);
         }
 
-        /* 2. 中间流式主内容区（极致留白） */
+        /* 2. 中间流式主内容区（极大化画布体验） */
         .main-content {
             flex: 1;
             padding: 64px 80px;
@@ -97,9 +98,9 @@
             flex-direction: column;
             gap: 48px;
             scroll-behavior: smooth;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* 隐藏滚动条 */
         .main-content::-webkit-scrollbar {
             width: 0px;
         }
@@ -161,7 +162,6 @@
             gap: 24px;
         }
 
-        /* 苹果风格的高级暗黑卡片 */
         .card {
             background: var(--bg-card);
             border: 1px solid var(--border);
@@ -214,22 +214,38 @@
             gap: 6px;
         }
 
-        /* 3. 右侧毛玻璃悬浮聊天窗 */
+        /* 3. 右侧滑动抽屉式聊天窗 */
         .chat-container {
             width: 380px;
-            background: rgba(20, 20, 23, 0.7);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            background: rgba(20, 20, 23, 0.75);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
             border-left: 1px solid var(--border);
             display: flex;
             flex-direction: column;
             height: 100vh;
-            animation: slideIn 0.5s ease;
+            position: absolute;
+            top: 0;
+            right: -380px; /* 初始完美隐藏在屏幕右侧边缘 */
+            z-index: 100;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); /* 高级缓动丝滑动画 */
+        }
+
+        /* 当被激活展开时的样式 */
+        .chat-container.open {
+            transform: translateX(-380px); /* 整体向左滑出 */
+            box-shadow: -20px 0 40px rgba(0, 0, 0, 0.6);
         }
 
         .chat-header {
             padding: 24px;
             border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chat-header-left {
             display: flex;
             align-items: center;
             gap: 14px;
@@ -262,6 +278,24 @@
         .chat-header-info h2 { font-size: 14px; font-weight: 600; }
         .chat-header-info p { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
 
+        /* 收起关闭图标按钮 */
+        .close-chat-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .close-chat-btn:hover {
+            background: rgba(255,255,255,0.05);
+            color: var(--text-main);
+        }
+
         .chat-messages {
             flex: 1;
             padding: 24px;
@@ -269,14 +303,6 @@
             display: flex;
             flex-direction: column;
             gap: 16px;
-        }
-
-        .chat-messages::-webkit-scrollbar {
-            width: 4px;
-        }
-        .chat-messages::-webkit-scrollbar-thumb {
-            background: var(--border);
-            border-radius: 99px;
         }
 
         .message {
@@ -327,10 +353,7 @@
             outline: none;
             font-size: 14px;
             color: var(--text-main);
-            transition: border-color 0.2s;
         }
-
-        .chat-input-area input:focus { border-color: var(--primary); }
 
         .chat-input-area button {
             background: var(--primary);
@@ -346,35 +369,59 @@
             transition: all 0.2s;
         }
 
-        .chat-input-area button:hover { 
-            background: #1d4ed8; 
-            box-shadow: 0 0 15px var(--primary-glow);
+        /* 4. 右下角奢华呼吸高光悬浮按钮 */
+        .chat-trigger-fab {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 99;
+            border: none;
+            box-shadow: 0 8px 24px rgba(37, 99, 235, 0.4);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .chat-trigger-fab:hover {
+            transform: scale(1.08) translateY(-2px);
+            box-shadow: 0 12px 28px rgba(37, 99, 235, 0.5);
+        }
+
+        /* 触发隐藏雷达光圈动画 */
+        .chat-trigger-fab::after {
+            content: '';
+            position: absolute;
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+            animation: radar 2s infinite ease-out;
+            pointer-events: none;
         }
         
         .sidebar-footer {
             font-family: var(--font-mono);
             font-size: 11px;
             color: var(--text-muted);
-            letter-spacing: -0.01em;
         }
 
-        /* 动画特效 */
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.05); opacity: 0.8; }
-            100% { transform: scale(1); opacity: 1; }
-        }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        @keyframes slideIn {
-            from { transform: translateX(20px); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
         @keyframes msgFade {
             from { opacity: 0; transform: translateY(5px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes radar {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.4); opacity: 0; }
         }
     </style>
 </head>
@@ -398,7 +445,7 @@
         </div>
     </div>
 
-    <div class="main-content">
+    <div class="main-content" id="mainCanvas">
         <div class="profile-header" id="home">
             <span class="badge">IDENTITY ARCH</span>
             <h1>SQ — 数字进化流转空间</h1>
@@ -413,7 +460,7 @@
                 <div class="card">
                     <div class="card-content">
                         <h3>司法考试与学术深造体系</h3>
-                        <p>系统化学术筑基。深入推演民商法与诉讼制度的精髓，在严密的法条法理重构中，打磨底层防御性逻辑和逻辑雕刻体系。</p>
+                        <p>系统化学术筑基。深入推演民商法与诉讼法制度，在严密的法条重构中，打磨底层防御性逻辑和逻辑雕刻体系。</p>
                     </div>
                     <div class="card-footer-tag"><i data-lucide="file-text" style="width:12px"></i>STATUS // RUNNING</div>
                 </div>
@@ -435,14 +482,14 @@
                 <div class="card">
                     <div class="card-content">
                         <h3>8周校园社交网络交互协议</h3>
-                        <p>基于行为建模与阿德勒 teleology 心理分析，对特定校园场域进行行为数据采集与动机解析，沉淀人际交互主动权操盘模型。</p>
+                        <p>基于行为建模与阿德勒 teleology 心理分析，对特定校园场域进行行为数据采集与动机解析，沉淀人际交互操盘模型。</p>
                     </div>
                     <div class="card-footer-tag"><i data-lucide="users" style="width:12px"></i>PROTOCOL // PHASE_02</div>
                 </div>
                 <div class="card">
                     <div class="card-content">
                         <h3>古典文学、茶艺与脑力能量维护</h3>
-                        <p>在苏轼与李清照的宋词意境中推演古典美学，结合 Longjing / Pu'er 茶道调配仪轨，实现高负荷理性燃烧后的底层能量回补。</p>
+                        <p>在苏轼与李清照的宋词意境中推演古典美学，结合 Longjing / Pu'er 茶道调配仪轨，实现高负荷脑力消耗后的能量回补。</p>
                     </div>
                     <div class="card-footer-tag"><i data-lucide="battery-charging" style="width:12px"></i>RECHARGE // OPTIMIZED</div>
                 </div>
@@ -450,55 +497,84 @@
         </div>
     </div>
 
-    <div class="chat-container">
+    <button class="chat-trigger-fab" id="chatFab" onclick="toggleChat()">
+        <i data-lucide="message-square-code" id="fabIcon"></i>
+    </button>
+
+    <div class="chat-container" id="chatDrawer">
         <div class="chat-header">
-            <div class="avatar-pulse">
-                <i data-lucide="bot"></i>
-                <div class="avatar-status"></div>
+            <div class="chat-header-left">
+                <div class="avatar-pulse">
+                    <i data-lucide="bot"></i>
+                    <div class="avatar-status"></div>
+                </div>
+                <div class="chat-header-info">
+                    <h2>WAVE — SQ 数字分身</h2>
+                    <p>保持法律人的理性与克制 // DEEPSEEK</p>
+                </div>
             </div>
-            <div class="chat-header-info">
-                <h2>WAVE — SQ 数字分身</h2>
-                <p>保持法律人的理性与克制 // DEEPSEEK 大脑</p>
-            </div>
+            <button class="close-chat-btn" onclick="toggleChat()">
+                <i data-lucide="chevron-right" style="width: 18px; height: 18px;"></i>
+            </button>
         </div>
         
         <div class="chat-messages" id="chatBox">
             <div class="message bot">
                 <div class="msg-bubble">
-                    你好。我是 SQ 部署在边缘网络的数字分身。我已成功建立法律逻辑、社会博弈以及政治制度知识库。请输入你想探讨的议题。
+                    你好。我是 SQ 部署在边缘网络的数字分身。我已成功建立法律逻辑、社会博弈知识库。你想探讨什么议题？
                 </div>
             </div>
         </div>
         
         <div class="chat-input-area">
-            <input type="text" id="userInput" placeholder="给 SQ 的分身下达指令..." onkeydown="if(event.key==='Enter') sendMessage()">
+            <input type="text" id="chatInput" placeholder="输入留言或指令..." onkeydown="if(event.key==='Enter') sendMessage()">
             <button onclick="sendMessage()"><i data-lucide="arrow-up" style="width:18px;height:18px;"></i></button>
         </div>
     </div>
 
     <script>
-        // 初始化高端精致图标
+        // 初始化 Lucide 图标
         lucide.createIcons();
 
-        // 已经为你精准绑定的后端核心 Worker 网址
+        // 核心 Worker 网址
         const WORKER_URL = 'https://plain-haze-a297.shiq3086.workers.dev/'; 
 
+        // 核心控制逻辑：展开/收起聊天抽屉
+        function toggleChat() {
+            const drawer = document.getElementById('chatDrawer');
+            const fab = document.getElementById('chatFab');
+            const mainCanvas = document.getElementById('mainCanvas');
+
+            // 切换开启状态类
+            drawer.classList.toggle('open');
+
+            if (drawer.classList.contains('open')) {
+                // 如果聊天窗打开：隐藏悬浮球，同时让主内容区内缩右边距，防止大屏幕下文字被挡住
+                fab.style.opacity = '0';
+                fab.style.pointerEvents = 'none';
+                if (window.innerWidth > 1200) {
+                    mainCanvas.style.paddingRight = '420px';
+                }
+            } else {
+                // 如果聊天窗关闭：释放悬浮球，内容画布恢复自由大屏
+                fab.style.opacity = '1';
+                fab.style.pointerEvents = 'auto';
+                mainCanvas.style.paddingRight = '80px';
+            }
+        }
+
         async function sendMessage() {
-            const inputEl = document.getElementById('userInput');
-            const chatBox = document.getElementById('chatBox');
+            const inputEl = document.getElementById('chatInput');
             const text = inputEl.value.trim();
 
             if (!text) return;
 
-            // 1. 立即把用户的提问渲染进界面气泡里
             appendMessage('user', text);
             inputEl.value = '';
 
-            // 2. 生成一个优雅的“正在推演逻辑...”的等待提示
             const loadingId = appendMessage('bot', '正在进行逻辑推演 & 调用底层大模型...');
 
             try {
-                // 3. 异步 Fetch 呼叫你的 Cloudflare 后端
                 const response = await fetch(WORKER_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -507,19 +583,16 @@
 
                 const data = await response.json();
                 
-                // 移除等待气泡
                 if (document.getElementById(loadingId)) {
                     document.getElementById(loadingId).remove();
                 }
 
-                // 4. 正确吐出 DeepSeek 后端大脑生成的法律/社会学深度回答
                 if (data.answer) {
                     appendMessage('bot', data.answer);
                 } else if (data.error) {
                     appendMessage('bot', `【神经中枢报错】：${data.error}`);
                 }
             } catch (error) {
-                // 异常安全退出机制
                 if (document.getElementById(loadingId)) {
                     document.getElementById(loadingId).remove();
                 }
@@ -528,11 +601,9 @@
             }
         }
 
-        // 气泡生产工厂
         function appendMessage(sender, text) {
             const chatBox = document.getElementById('chatBox');
             const msgDiv = document.createElement('div');
-            // 防止高并发导致的ID冲突
             const id = 'msg-' + Date.now() + Math.random().toString(36).substr(2, 5);
             
             msgDiv.className = `message ${sender}`;
@@ -540,7 +611,7 @@
             msgDiv.innerHTML = `<div class="msg-bubble">${text}</div>`;
             
             chatBox.appendChild(msgDiv);
-            chatBox.scrollTop = chatBox.scrollHeight; // 滚动保持最前线
+            chatBox.scrollTop = chatBox.scrollHeight;
             return id;
         }
 
