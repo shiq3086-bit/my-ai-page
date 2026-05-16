@@ -1,0 +1,386 @@
+[index.html](https://github.com/user-attachments/files/27839837/index.html)
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQ's Digital Hub & AI Twin</title>
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.344.0/dist/umd/lucide.min.js"></script>
+    <style>
+        :root {
+            --bg-main: #f4f7fa;
+            --bg-card: #ffffff;
+            --primary: #2563eb;
+            --primary-light: #eff6ff;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-dark);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* 1. 左侧导航栏 */
+        .sidebar {
+            width: 260px;
+            background-color: var(--bg-card);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 32px;
+        }
+
+        .menu-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 8px;
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background-color: var(--primary-light);
+            color: var(--primary);
+        }
+
+        /* 2. 中间主内容区 */
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        .profile-header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .profile-header p {
+            color: var(--text-muted);
+            font-size: 16px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-tag {
+            align-self: flex-start;
+            padding: 4px 8px;
+            font-size: 11px;
+            font-weight: 600;
+            border-radius: 12px;
+            text-transform: uppercase;
+        }
+
+        .tag-blue { background: #dbeafe; color: #1e40af; }
+        .tag-green { background: #dcfce7; color: #14532d; }
+
+        .card h3 { font-size: 16px; }
+        .card p { font-size: 14px; color: var(--text-muted); line-height: 1.5; }
+
+        /* 3. 右侧悬浮聊天窗 */
+        .chat-container {
+            width: 380px;
+            background: var(--bg-card);
+            border-left: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .chat-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-light);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chat-header-info h2 { font-size: 15px; }
+        .chat-header-info p { font-size: 12px; color: var(--text-muted); }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .message {
+            display: flex;
+            gap: 12px;
+            max-width: 85%;
+        }
+
+        .message.bot { align-self: flex-start; }
+        .message.user { align-self: flex-end; flex-direction: row-reverse; }
+
+        .msg-bubble {
+            padding: 12px 16px;
+            border-radius: 16px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .bot .msg-bubble { background: var(--bg-main); color: var(--text-dark); border-top-left-radius: 4px; }
+        .user .msg-bubble { background: var(--primary); color: white; border-top-right-radius: 4px; }
+
+        .chat-input-area {
+            padding: 20px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 8px;
+        }
+
+        .chat-input-area input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .chat-input-area input:focus { border-color: var(--primary); }
+
+        .chat-input-area button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .chat-input-area button:hover { background: #1d4ed8; }
+        
+        footer {
+            margin-top: auto;
+            font-size: 12px;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border);
+            padding-top: 16px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="brand">
+            <i data-lucide="code-2"></i>
+            <span>SQ's Workspace</span>
+        </div>
+        <ul class="menu-list">
+            <li><a href="#" class="menu-item active"><i data-lucide="home"></i>首页</a></li>
+            <li><a href="#" class="menu-item"><i data-lucide="book-open"></i>法学研究</a></li>
+            <li><a href="#" class="menu-item"><i data-lucide="folder-git-2"></i>技术项目</a></li>
+            <li><a href="#" class="menu-item"><i data-lucide="user"></i>关于分身</a></li>
+        </ul>
+        <footer>
+            © 2026 SQ - Digital Identity
+        </footer>
+    </div>
+
+    <div class="main-content">
+        <div class="profile-header">
+            <h1>SQ (数字空间) - 法学与技术探索者</h1>
+            <p>正在探索法律逻辑、地缘政治与人工智能的交叉边界。</p>
+        </div>
+
+        <div>
+            <div class="section-title"><i data-lucide="sparkles" style="color:#eab308"></i> 核心高光</div>
+            <div class="grid-container">
+                <div class="card">
+                    <span class="card-tag tag-blue">STUDY</span>
+                    <h3>法学与法律职业资格备考</h3>
+                    <p>系统化整理民商法与诉讼法体系，构建底层法律逻辑，为法考与学术深造筑基。</p>
+                </div>
+                <div class="card">
+                    <span class="card-tag tag-green">AI & TECH</span>
+                    <h3>大模型边缘化部署实验</h3>
+                    <p>基于 Cloudflare Workers 架构部署轻量化分身，探索个人 Token 资产的防御性逻辑。</p>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <div class="section-title"><i data-lucide="activity" style="color:#2563eb"></i> 当前进行中的项目</div>
+            <div class="grid-container">
+                <div class="card">
+                    <h3>社会交互与观察协议</h3>
+                    <p>开展为期8周的校园社交网络与行为模式观察，建立人际博弈与心理分析 model。</p>
+                </div>
+                <div class="card">
+                    <h3>古典文学与茶道冥想</h3>
+                    <p>结合苏轼、李清照的宋词意境，探索在茶香中实现高强度脑力消耗后的能量恢复。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="chat-container">
+        <div class="chat-header">
+            <div class="avatar"><i data-lucide="user-check"></i></div>
+            <div class="chat-header-info">
+                <h2>WAVE - SQ 数字分身 v1.0</h2>
+                <p>保持法律人的理性与克制 · 在线</p>
+            </div>
+        </div>
+        <div class="chat-messages" id="chatBox">
+            <div class="message bot">
+                <div class="msg-bubble">你好，我是 SQ 的数字分身。我是一名大一法学生。你可以向我询问关于社会学、法律逻辑或政治学的问题。</div>
+            </div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="userInput" placeholder="给 SQ 的分身留言..." onkeydown="if(event.key==='Enter') sendMessage()">
+            <button onclick="sendMessage()"><i data-lucide="send" style="width:18px;height:18px;"></i></button>
+        </div>
+    </div>
+
+    <script>
+        // 初始化 Lucide 图标
+        lucide.createIcons();
+
+        // 已自动为您填入最正确的后端 Worker 网址
+        const WORKER_URL = 'https://plain-haze-a297.shiq3086.workers.dev/'; 
+
+        async function sendMessage() {
+            const inputEl = document.getElementById('userInput');
+            const chatBox = document.getElementById('chatBox');
+            const text = inputEl.value.trim();
+
+            if (!text) return;
+
+            // 1. 渲染用户消息
+            appendMessage('user', text);
+            inputEl.value = '';
+
+            // 2. 渲染正在思考的 Loading 状态
+            const loadingId = appendMessage('bot', '正在思考法律逻辑...');
+
+            try {
+                // 3. 向你的 Worker 后端发起精准呼叫
+                const response = await fetch(WORKER_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ question: text })
+                });
+
+                const data = await response.json();
+                
+                // 移除 loading，替换为真实回答
+                if (document.getElementById(loadingId)) {
+                    document.getElementById(loadingId).remove();
+                }
+
+                if (data.answer) {
+                    appendMessage('bot', data.answer);
+                } else if (data.error) {
+                    appendMessage('bot', `【系统错误】：${data.error}`);
+                }
+            } catch (error) {
+                if (document.getElementById(loadingId)) {
+                    document.getElementById(loadingId).remove();
+                }
+                appendMessage('bot', '【连接失败】：请确认 Worker 已部署，且网址填入正确。');
+                console.error(error);
+            }
+        }
+
+        function appendMessage(sender, text) {
+            const chatBox = document.getElementById('chatBox');
+            const msgDiv = document.createElement('div');
+            const id = 'msg-' + Date.now() + Math.random().toString(36).substr(2, 5);
+            
+            msgDiv.className = `message ${sender}`;
+            msgDiv.id = id;
+            msgDiv.innerHTML = `<div class="msg-bubble">${text}</div>`;
+            
+            chatBox.appendChild(msgDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+            return id;
+        }
+    </script>
+</body>
+</html>
