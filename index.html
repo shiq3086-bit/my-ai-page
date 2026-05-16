@@ -35,7 +35,7 @@
             position: relative;
         }
 
-        /* 1. 左侧苹果极简导航栏 */
+        /* 1. 左侧苹果极简侧边栏（加入平滑动画） */
         .sidebar {
             width: 260px;
             background-color: var(--bg-main);
@@ -45,13 +45,27 @@
             padding: 32px 24px;
             justify-content: space-between;
             flex-shrink: 0;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            z-index: 90;
+        }
+
+        /* 左边栏收起状态 */
+        .sidebar.collapsed {
+            margin-left: -260px; /* 丝滑滑出左屏幕边缘 */
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
         .brand {
             display: flex;
             align-items: center;
             gap: 10px;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 600;
             letter-spacing: -0.02em;
             color: var(--text-main);
@@ -59,6 +73,24 @@
 
         .brand i {
             color: var(--primary);
+        }
+
+        /* 收起左边栏的精致小按钮 */
+        .collapse-left-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .collapse-left-btn:hover {
+            background: rgba(255,255,255,0.05);
+            color: var(--text-main);
         }
 
         .menu-list {
@@ -89,7 +121,7 @@
             border: 1px solid var(--border);
         }
 
-        /* 2. 中间流式主内容区（极大化画布体验） */
+        /* 2. 中间流式主内容区（极致进化体验） */
         .main-content {
             flex: 1;
             padding: 64px 80px;
@@ -98,7 +130,7 @@
             flex-direction: column;
             gap: 48px;
             scroll-behavior: smooth;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); /* 全局缓动联动 */
         }
 
         .main-content::-webkit-scrollbar {
@@ -214,7 +246,36 @@
             gap: 6px;
         }
 
-        /* 3. 右侧滑动抽屉式聊天窗 */
+        /* 左上角绝对定位的：唤醒左菜单悬浮小按钮 */
+        .menu-trigger-fab {
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 80;
+            opacity: 0; /* 默认隐藏，左边栏收起时才显现 */
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+        .menu-trigger-fab.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .menu-trigger-fab:hover {
+            border-color: #3f3f46;
+            background: #1c1c21;
+        }
+
+        /* 3. 右侧智能滑动抽屉式聊天窗 */
         .chat-container {
             width: 380px;
             background: rgba(20, 20, 23, 0.75);
@@ -226,14 +287,13 @@
             height: 100vh;
             position: absolute;
             top: 0;
-            right: -380px; /* 初始完美隐藏在屏幕右侧边缘 */
+            right: -380px; /* 完美隐藏 */
             z-index: 100;
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); /* 高级缓动丝滑动画 */
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* 当被激活展开时的样式 */
         .chat-container.open {
-            transform: translateX(-380px); /* 整体向左滑出 */
+            transform: translateX(-380px);
             box-shadow: -20px 0 40px rgba(0, 0, 0, 0.6);
         }
 
@@ -278,7 +338,6 @@
         .chat-header-info h2 { font-size: 14px; font-weight: 600; }
         .chat-header-info p { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
 
-        /* 收起关闭图标按钮 */
         .close-chat-btn {
             background: transparent;
             border: none;
@@ -369,7 +428,7 @@
             transition: all 0.2s;
         }
 
-        /* 4. 右下角奢华呼吸高光悬浮按钮 */
+        /* 4. 右下角智能大模型悬浮球 */
         .chat-trigger-fab {
             position: fixed;
             bottom: 32px;
@@ -394,7 +453,6 @@
             box-shadow: 0 12px 28px rgba(37, 99, 235, 0.5);
         }
 
-        /* 触发隐藏雷达光圈动画 */
         .chat-trigger-fab::after {
             content: '';
             position: absolute;
@@ -427,11 +485,20 @@
 </head>
 <body>
 
-    <div class="sidebar">
+    <button class="menu-trigger-fab" id="menuFab" onclick="toggleLeftSidebar()">
+        <i data-lucide="sidebar"></i>
+    </button>
+
+    <div class="sidebar" id="leftSidebar">
         <div>
-            <div class="brand">
-                <i data-lucide="scale"></i>
-                <span>SQ'S ATOMS HUB</span>
+            <div class="sidebar-header">
+                <div class="brand">
+                    <i data-lucide="scale"></i>
+                    <span>SQ'S ATOMS HUB</span>
+                </div>
+                <button class="collapse-left-btn" onclick="toggleLeftSidebar()">
+                    <i data-lucide="sidebar" style="width: 16px; height: 16px;"></i>
+                </button>
             </div>
             <ul class="menu-list">
                 <li><a href="#home" class="menu-item active"><i data-lucide="layout-dashboard"></i>空间首页</a></li>
@@ -539,24 +606,40 @@
         // 核心 Worker 网址
         const WORKER_URL = 'https://plain-haze-a297.shiq3086.workers.dev/'; 
 
-        // 核心控制逻辑：展开/收起聊天抽屉
+        // 控制逻辑1：折叠/展开左侧侧边栏
+        function toggleLeftSidebar() {
+            const sidebar = document.getElementById('leftSidebar');
+            const menuFab = document.getElementById('menuFab');
+            const mainCanvas = document.getElementById('mainCanvas');
+
+            sidebar.classList.toggle('collapsed');
+
+            if (sidebar.classList.contains('collapsed')) {
+                // 如果左侧收起：显示悬浮球，中间画布向左扩展消除空白
+                menuFab.classList.add('show');
+                mainCanvas.style.paddingLeft = '64px';
+            } else {
+                // 如果左侧展开：隐藏悬浮球，中间画布恢复标准内边距
+                menuFab.classList.remove('show');
+                mainCanvas.style.paddingLeft = '80px';
+            }
+        }
+
+        // 控制逻辑2：展开/收起右侧智能聊天抽屉
         function toggleChat() {
             const drawer = document.getElementById('chatDrawer');
             const fab = document.getElementById('chatFab');
             const mainCanvas = document.getElementById('mainCanvas');
 
-            // 切换开启状态类
             drawer.classList.toggle('open');
 
             if (drawer.classList.contains('open')) {
-                // 如果聊天窗打开：隐藏悬浮球，同时让主内容区内缩右边距，防止大屏幕下文字被挡住
                 fab.style.opacity = '0';
                 fab.style.pointerEvents = 'none';
                 if (window.innerWidth > 1200) {
                     mainCanvas.style.paddingRight = '420px';
                 }
             } else {
-                // 如果聊天窗关闭：释放悬浮球，内容画布恢复自由大屏
                 fab.style.opacity = '1';
                 fab.style.pointerEvents = 'auto';
                 mainCanvas.style.paddingRight = '80px';
@@ -615,7 +698,7 @@
             return id;
         }
 
-        // 简易路由高亮切换
+        // 简易路由导航切换高亮
         window.addEventListener('hashchange', () => {
             const items = document.querySelectorAll('.menu-item');
             items.forEach(item => {
