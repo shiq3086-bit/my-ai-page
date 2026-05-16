@@ -1,104 +1,155 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
+、<!DOCTYPE html>
+<html lang="zh-CN" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SQ's Digital Hub & AI Twin</title>
+    <title>SQ's Digital Space | 法学与技术探索者</title>
     <script src="https://cdn.jsdelivr.net/npm/lucide@0.344.0/dist/umd/lucide.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --bg-main: #f4f7fa;
-            --bg-card: #ffffff;
-            --primary: #2563eb;
-            --primary-light: #eff6ff;
-            --text-dark: #1e293b;
-            --text-muted: #64748b;
-            --border: #e2e8f0;
+            --bg-main: #09090b;       /* 苹果顶配深色底色 */
+            --bg-card: #141417;       /* 科技质感卡片色 */
+            --primary: #2563eb;       /* 庄严法学蓝 */
+            --primary-glow: rgba(37, 99, 235, 0.15);
+            --border: #27272a;        /* 细腻暗黑线条 */
+            --text-main: #f4f4f5;     /* 极简白文字 */
+            --text-muted: #a1a1aa;    /* 质感灰文字 */
+            --font-mono: 'IBM Plex Mono', monospace;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-family: 'Inter', -apple-system, sans-serif;
         }
 
         body {
             background-color: var(--bg-main);
-            color: var(--text-dark);
+            color: var(--text-main);
             display: flex;
             height: 100vh;
             overflow: hidden;
         }
 
-        /* 1. 左侧导航栏 */
+        /* 1. 左侧苹果极简导航栏 */
         .sidebar {
             width: 260px;
-            background-color: var(--bg-card);
+            background-color: var(--bg-main);
             border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
-            padding: 24px;
+            padding: 32px 24px;
+            justify-content: space-between;
         }
 
         .brand {
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 18px;
-            font-weight: 700;
+            gap: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            color: var(--text-main);
+        }
+
+        .brand i {
             color: var(--primary);
-            margin-bottom: 32px;
+            animation: pulse 2s infinite;
         }
 
         .menu-list {
             list-style: none;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
+            margin-top: 40px;
+            flex: 1;
         }
 
         .menu-item {
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 12px;
+            padding: 12px 16px;
             border-radius: 8px;
-            color: var(--text-dark);
+            color: var(--text-muted);
             text-decoration: none;
+            font-size: 14px;
             font-weight: 500;
-            transition: all 0.2s;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .menu-item:hover, .menu-item.active {
-            background-color: var(--primary-light);
-            color: var(--primary);
+            background-color: var(--bg-card);
+            color: var(--text-main);
+            border: 1px solid var(--border);
         }
 
-        /* 2. 中间主内容区 */
+        /* 2. 中间流式主内容区（极致留白） */
         .main-content {
             flex: 1;
-            padding: 40px;
+            padding: 64px 80px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 32px;
+            gap: 48px;
+            scroll-behavior: smooth;
+        }
+
+        /* 隐藏滚动条 */
+        .main-content::-webkit-scrollbar {
+            width: 0px;
+        }
+
+        .profile-header {
+            max-width: 700px;
+            animation: fadeIn 0.8s ease;
+        }
+
+        .profile-header .badge {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--primary);
+            background: rgba(37, 99, 235, 0.1);
+            border: 1px solid rgba(37, 99, 235, 0.2);
+            padding: 4px 10px;
+            border-radius: 999px;
+            display: inline-block;
+            margin-bottom: 16px;
         }
 
         .profile-header h1 {
-            font-size: 28px;
-            margin-bottom: 8px;
+            font-size: 36px;
+            font-weight: 600;
+            letter-spacing: -0.03em;
+            line-height: 1.2;
+            margin-bottom: 16px;
+            background: linear-gradient(to right, #fff, #a1a1aa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .profile-header p {
             color: var(--text-muted);
             font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .section-block {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
 
         .section-title {
-            font-size: 18px;
+            font-size: 14px;
             font-weight: 600;
-            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
             display: flex;
             align-items: center;
             gap: 8px;
@@ -106,115 +157,177 @@
 
         .grid-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
         }
 
+        /* 苹果风格的高级暗黑卡片 */
         .card {
             background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 24px;
+            border-radius: 16px;
+            padding: 32px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            transition: transform 0.2s, box-shadow 0.2s;
+            justify-content: space-between;
+            gap: 24px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at top left, rgba(255,255,255,0.02), transparent);
+            pointer-events: none;
         }
 
         .card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+            border-color: #3f3f46;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            transform: translateY(-4px);
         }
 
-        .card-tag {
-            align-self: flex-start;
-            padding: 4px 8px;
+        .card-content h3 {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 12px;
+            letter-spacing: -0.01em;
+        }
+
+        .card-content p {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .card-footer-tag {
+            font-family: var(--font-mono);
             font-size: 11px;
-            font-weight: 600;
-            border-radius: 12px;
-            text-transform: uppercase;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border);
+            padding-top: 16px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
-        .tag-blue { background: #dbeafe; color: #1e40af; }
-        .tag-green { background: #dcfce7; color: #14532d; }
-
-        .card h3 { font-size: 16px; }
-        .card p { font-size: 14px; color: var(--text-muted); line-height: 1.5; }
-
-        /* 3. 右侧悬浮聊天窗 */
+        /* 3. 右侧毛玻璃悬浮聊天窗 */
         .chat-container {
             width: 380px;
-            background: var(--bg-card);
+            background: rgba(20, 20, 23, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border-left: 1px solid var(--border);
             display: flex;
             flex-direction: column;
             height: 100vh;
+            animation: slideIn 0.5s ease;
         }
 
         .chat-header {
-            padding: 20px;
+            padding: 24px;
             border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
         }
 
-        .avatar {
+        .avatar-pulse {
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background: var(--primary-light);
+            background: rgba(37, 99, 235, 0.1);
+            border: 1px solid var(--primary);
             color: var(--primary);
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
         }
 
-        .chat-header-info h2 { font-size: 15px; }
-        .chat-header-info p { font-size: 12px; color: var(--text-muted); }
+        .avatar-status {
+            width: 8px;
+            height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            border: 2px solid var(--bg-card);
+        }
+
+        .chat-header-info h2 { font-size: 14px; font-weight: 600; }
+        .chat-header-info p { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
 
         .chat-messages {
             flex: 1;
-            padding: 20px;
+            padding: 24px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
             gap: 16px;
         }
 
+        .chat-messages::-webkit-scrollbar {
+            width: 4px;
+        }
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 99px;
+        }
+
         .message {
             display: flex;
-            gap: 12px;
             max-width: 85%;
+            animation: msgFade 0.3s ease forwards;
         }
 
         .message.bot { align-self: flex-start; }
-        .message.user { align-self: flex-end; flex-direction: row-reverse; }
+        .message.user { align-self: flex-end; }
 
         .msg-bubble {
             padding: 12px 16px;
-            border-radius: 16px;
+            border-radius: 14px;
             font-size: 14px;
             line-height: 1.5;
+            word-wrap: break-word;
         }
 
-        .bot .msg-bubble { background: var(--bg-main); color: var(--text-dark); border-top-left-radius: 4px; }
-        .user .msg-bubble { background: var(--primary); color: white; border-top-right-radius: 4px; }
+        .bot .msg-bubble { 
+            background: var(--bg-card); 
+            color: var(--text-main); 
+            border: 1px solid var(--border);
+            border-top-left-radius: 4px; 
+        }
+        
+        .user .msg-bubble { 
+            background: var(--primary); 
+            color: white; 
+            border-top-right-radius: 4px; 
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
 
         .chat-input-area {
-            padding: 20px;
+            padding: 24px;
             border-top: 1px solid var(--border);
             display: flex;
-            gap: 8px;
+            gap: 12px;
+            background: rgba(9, 9, 11, 0.5);
         }
 
         .chat-input-area input {
             flex: 1;
-            padding: 12px;
+            padding: 14px 16px;
+            background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 8px;
+            border-radius: 10px;
             outline: none;
             font-size: 14px;
+            color: var(--text-main);
+            transition: border-color 0.2s;
         }
 
         .chat-input-area input:focus { border-color: var(--primary); }
@@ -223,76 +336,115 @@
             background: var(--primary);
             color: white;
             border: none;
-            padding: 12px;
-            border-radius: 8px;
+            width: 46px;
+            height: 46px;
+            border-radius: 10px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: background 0.2s;
+            transition: all 0.2s;
         }
 
-        .chat-input-area button:hover { background: #1d4ed8; }
+        .chat-input-area button:hover { 
+            background: #1d4ed8; 
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
         
-        footer {
-            margin-top: auto;
-            font-size: 12px;
+        .sidebar-footer {
+            font-family: var(--font-mono);
+            font-size: 11px;
             color: var(--text-muted);
-            border-top: 1px solid var(--border);
-            padding-top: 16px;
+            letter-spacing: -0.01em;
+        }
+
+        /* 动画特效 */
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideIn {
+            from { transform: translateX(20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes msgFade {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
 
     <div class="sidebar">
-        <div class="brand">
-            <i data-lucide="code-2"></i>
-            <span>SQ's Workspace</span>
+        <div>
+            <div class="brand">
+                <i data-lucide="scale"></i>
+                <span>SQ'S ATOMS HUB</span>
+            </div>
+            <ul class="menu-list">
+                <li><a href="#home" class="menu-item active"><i data-lucide="layout-dashboard"></i>空间首页</a></li>
+                <li><a href="#legal" class="menu-item"><i data-lucide="bookmark"></i>法学研究</a></li>
+                <li><a href="#tech" class="menu-item"><i data-lucide="cpu"></i>边缘部署</a></li>
+                <li><a href="#social" class="menu-item"><i data-lucide="eye"></i>交互协议</a></li>
+            </ul>
         </div>
-        <ul class="menu-list">
-            <li><a href="#" class="menu-item active"><i data-lucide="home"></i>首页</a></li>
-            <li><a href="#" class="menu-item"><i data-lucide="book-open"></i>法学研究</a></li>
-            <li><a href="#" class="menu-item"><i data-lucide="folder-git-2"></i>技术项目</a></li>
-            <li><a href="#" class="menu-item"><i data-lucide="user"></i>关于分身</a></li>
-        </ul>
-        <footer>
-            © 2026 SQ - Digital Identity
-        </footer>
+        <div class="sidebar-footer">
+            [v1.0.2026] // ARCH DISCOVERED
+        </div>
     </div>
 
     <div class="main-content">
-        <div class="profile-header">
-            <h1>SQ (数字空间) - 法学与技术探索者</h1>
-            <p>正在探索法律逻辑、地缘政治与人工智能的交叉边界。</p>
+        <div class="profile-header" id="home">
+            <span class="badge">IDENTITY ARCH</span>
+            <h1>SQ — 数字进化流转空间</h1>
+            <p>融合底层法律逻辑、网络交互博弈与分布式人工智能边界。在法理的审慎与边缘计算的精进中，构建防御性数字孪生系统。</p>
         </div>
 
-        <div>
-            <div class="section-title"><i data-lucide="sparkles" style="color:#eab308"></i> 核心高光</div>
+        <div class="section-block" id="legal">
+            <div class="section-title">
+                <i data-lucide="terminal" style="width:14px; color:var(--primary)"></i>01 / 核心学术防御
+            </div>
             <div class="grid-container">
                 <div class="card">
-                    <span class="card-tag tag-blue">STUDY</span>
-                    <h3>法学与法律职业资格备考</h3>
-                    <p>系统化整理民商法与诉讼法体系，构建底层法律逻辑，为法考与学术深造筑基。</p>
+                    <div class="card-content">
+                        <h3>司法考试与学术深造体系</h3>
+                        <p>系统化学术筑基。深入推演民商法与诉讼制度的精髓，在严密的法条法理重构中，打磨底层防御性逻辑和逻辑雕刻体系。</p>
+                    </div>
+                    <div class="card-footer-tag"><i data-lucide="file-text" style="width:12px"></i>STATUS // RUNNING</div>
                 </div>
-                <div class="card">
-                    <span class="card-tag tag-green">AI & TECH</span>
-                    <h3>大模型边缘化部署实验</h3>
-                    <p>基于 Cloudflare Workers 架构部署轻量化分身，探索个人 Token 资产的防御性逻辑。</p>
+                <div class="card" id="tech">
+                    <div class="card-content">
+                        <h3>大模型边缘化部署与Token资产隔离</h3>
+                        <p>基于 Cloudflare Workers 架构的边缘大模型工程，接入全离线安全隔离策略，有效防御不当API审查与个人智力资产Token锁死。</p>
+                    </div>
+                    <div class="card-footer-tag"><i data-lucide="shield-alert" style="width:12px"></i>BACKEND // EDGE DEPLOYED</div>
                 </div>
             </div>
         </div>
 
-        <div>
-            <div class="section-title"><i data-lucide="activity" style="color:#2563eb"></i> 当前进行中的项目</div>
+        <div class="section-block" id="social">
+            <div class="section-title">
+                <i data-lucide="activity" style="width:14px; color:var(--primary)"></i>02 / 社会博弈与能量重构
+            </div>
             <div class="grid-container">
                 <div class="card">
-                    <h3>社会交互与观察协议</h3>
-                    <p>开展为期8周的校园社交网络与行为模式观察，建立人际博弈与心理分析 model。</p>
+                    <div class="card-content">
+                        <h3>8周校园社交网络交互协议</h3>
+                        <p>基于行为建模与阿德勒 teleology 心理分析，对特定校园场域进行行为数据采集与动机解析，沉淀人际交互主动权操盘模型。</p>
+                    </div>
+                    <div class="card-footer-tag"><i data-lucide="users" style="width:12px"></i>PROTOCOL // PHASE_02</div>
                 </div>
                 <div class="card">
-                    <h3>古典文学与茶道冥想</h3>
-                    <p>结合苏轼、李清照的宋词意境，探索在茶香中实现高强度脑力消耗后的能量恢复。</p>
+                    <div class="card-content">
+                        <h3>古典文学、茶艺与脑力能量维护</h3>
+                        <p>在苏轼与李清照的宋词意境中推演古典美学，结合 Longjing / Pu'er 茶道调配仪轨，实现高负荷理性燃烧后的底层能量回补。</p>
+                    </div>
+                    <div class="card-footer-tag"><i data-lucide="battery-charging" style="width:12px"></i>RECHARGE // OPTIMIZED</div>
                 </div>
             </div>
         </div>
@@ -300,28 +452,35 @@
 
     <div class="chat-container">
         <div class="chat-header">
-            <div class="avatar"><i data-lucide="user-check"></i></div>
+            <div class="avatar-pulse">
+                <i data-lucide="bot"></i>
+                <div class="avatar-status"></div>
+            </div>
             <div class="chat-header-info">
-                <h2>WAVE - SQ 数字分身 v1.0</h2>
-                <p>保持法律人的理性与克制 · 在线</p>
+                <h2>WAVE — SQ 数字分身</h2>
+                <p>保持法律人的理性与克制 // DEEPSEEK 大脑</p>
             </div>
         </div>
+        
         <div class="chat-messages" id="chatBox">
             <div class="message bot">
-                <div class="msg-bubble">你好，我是 SQ 的数字分身。我是一名大一法学生。你可以向我询问关于社会学、法律逻辑或政治学的问题。</div>
+                <div class="msg-bubble">
+                    你好。我是 SQ 部署在边缘网络的数字分身。我已成功建立法律逻辑、社会博弈以及政治制度知识库。请输入你想探讨的议题。
+                </div>
             </div>
         </div>
+        
         <div class="chat-input-area">
-            <input type="text" id="userInput" placeholder="给 SQ 的分身留言..." onkeydown="if(event.key==='Enter') sendMessage()">
-            <button onclick="sendMessage()"><i data-lucide="send" style="width:18px;height:18px;"></i></button>
+            <input type="text" id="userInput" placeholder="给 SQ 的分身下达指令..." onkeydown="if(event.key==='Enter') sendMessage()">
+            <button onclick="sendMessage()"><i data-lucide="arrow-up" style="width:18px;height:18px;"></i></button>
         </div>
     </div>
 
     <script>
-        // 初始化 Lucide 图标
+        // 初始化高端精致图标
         lucide.createIcons();
 
-        // 已自动为您填入最正确的后端 Worker 网址
+        // 已经为你精准绑定的后端核心 Worker 网址
         const WORKER_URL = 'https://plain-haze-a297.shiq3086.workers.dev/'; 
 
         async function sendMessage() {
@@ -331,15 +490,15 @@
 
             if (!text) return;
 
-            // 1. 渲染用户消息
+            // 1. 立即把用户的提问渲染进界面气泡里
             appendMessage('user', text);
             inputEl.value = '';
 
-            // 2. 渲染正在思考的 Loading 状态
-            const loadingId = appendMessage('bot', '正在思考法律逻辑...');
+            // 2. 生成一个优雅的“正在推演逻辑...”的等待提示
+            const loadingId = appendMessage('bot', '正在进行逻辑推演 & 调用底层大模型...');
 
             try {
-                // 3. 向你的 Worker 后端发起精准呼叫
+                // 3. 异步 Fetch 呼叫你的 Cloudflare 后端
                 const response = await fetch(WORKER_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -348,28 +507,32 @@
 
                 const data = await response.json();
                 
-                // 移除 loading，替换为真实回答
+                // 移除等待气泡
                 if (document.getElementById(loadingId)) {
                     document.getElementById(loadingId).remove();
                 }
 
+                // 4. 正确吐出 DeepSeek 后端大脑生成的法律/社会学深度回答
                 if (data.answer) {
                     appendMessage('bot', data.answer);
                 } else if (data.error) {
-                    appendMessage('bot', `【系统错误】：${data.error}`);
+                    appendMessage('bot', `【神经中枢报错】：${data.error}`);
                 }
             } catch (error) {
+                // 异常安全退出机制
                 if (document.getElementById(loadingId)) {
                     document.getElementById(loadingId).remove();
                 }
-                appendMessage('bot', '【连接失败】：请确认 Worker 已部署，且网址填入正确。');
+                appendMessage('bot', '【中枢接入失败】：边缘网络连接超时，请确认云端 Worker 正常响应。');
                 console.error(error);
             }
         }
 
+        // 气泡生产工厂
         function appendMessage(sender, text) {
             const chatBox = document.getElementById('chatBox');
             const msgDiv = document.createElement('div');
+            // 防止高并发导致的ID冲突
             const id = 'msg-' + Date.now() + Math.random().toString(36).substr(2, 5);
             
             msgDiv.className = `message ${sender}`;
@@ -377,9 +540,21 @@
             msgDiv.innerHTML = `<div class="msg-bubble">${text}</div>`;
             
             chatBox.appendChild(msgDiv);
-            chatBox.scrollTop = chatBox.scrollHeight;
+            chatBox.scrollTop = chatBox.scrollHeight; // 滚动保持最前线
             return id;
         }
+
+        // 简易路由高亮切换
+        window.addEventListener('hashchange', () => {
+            const items = document.querySelectorAll('.menu-item');
+            items.forEach(item => {
+                if(item.getAttribute('href') === window.location.hash) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+        });
     </script>
 </body>
 </html>
